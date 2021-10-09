@@ -1,7 +1,7 @@
 import inspect
 from django.template import Node, Library, TemplateSyntaxError
 from django.urls import reverse
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.translation import get_language
 from parler.models import TranslatableModel, TranslationDoesNotExist
 from parler.utils.context import switch_language, smart_override
@@ -165,9 +165,9 @@ def get_translated_url(context, lang_code, object=None):
 
 def _url_qs(url, qs):
     if qs and '?' not in url:
-        return u'{0}?{1}'.format(force_text(url), force_text(qs))
+        return u'{0}?{1}'.format(force_str(url), force_str(qs))
     else:
-        return force_text(url)
+        return force_str(url)
 
 
 @register.filter
@@ -185,6 +185,6 @@ def _cleanup_urlpattern_kwargs(kwargs):
     # For old function-based views, the url kwargs can pass extra arguments to the view.
     # Although these arguments don't have to be passed back to reverse(),
     # it's not a problem because the reverse() function just ignores them as there is no match.
-    # However, for class values, an exception occurs because reverse() wants to force_text() them.
+    # However, for class values, an exception occurs because reverse() wants to force_str() them.
     # Hence, remove the kwargs to avoid internal server errors on some exotic views.
     return dict((k, v) for k, v in kwargs.items() if not inspect.isclass(v))
